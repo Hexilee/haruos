@@ -17,5 +17,5 @@ pub extern "C" fn abort() {
 
 #[start]
 fn start(_argc: isize, _args: *const *const u8) -> isize {
-    0
+    loop {}
 }

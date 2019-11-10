@@ -1,0 +1,55 @@
+[env]
+TARGET = "riscv32-os"
+KERNEL = "target/${TARGET}/${MODE}/haruos"
+BIN = "target/${TARGET}/${MODE}/kernel.bin"
+USR_PARH = "usr"
+SFSIMG = "${USR_PATH}/rcore32.img"
+BOOTLOADER = "os/opensbi/virt.elf"
+
+[env.development]
+MODE = "debug"
+
+[env.production]
+MODE = "release"
+
+[tasks.clean]
+command = "cargo"
+args = ["clean"]
+
+[tasks.kernel]
+command = "cargo"
+args = ["xbuild", "--target", "riscv32-os.json"]
+
+[tasks.build]
+command = "riscv64-unknown-elf-objcopy"
+args = ["${KERNEL}", "--strip-all", "-O", "binary", "${BIN}"]
+dependencies = ["kernel"]
+
+[tasks.qemu]
+command = "qemu-system-riscv32"
+args = [
+    "-nographic",
+    "-machine", "virt",
+    "-kernel", "${BOOTLOADER}",
+    "-device", "loader,file=${BIN},addr=0x80400000"
+]
+
+[tasks.test]
+command = "cargo"
+args = ["xtest"]
+
+[tasks.asm]
+command = "riscv64-unknown-elf-objdump"
+args = ["-d", "${KERNEL}" ,"|", "less"]
+
+[tasks.rebuild]
+dependencies = [
+    "clean",
+    "build",
+]
+
+[tasks.run]
+dependencies = [
+    "build",
+    "qemu"
+]
