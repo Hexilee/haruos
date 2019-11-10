@@ -4,7 +4,7 @@ KERNEL = "target/${TARGET}/${MODE}/haruos"
 BIN = "target/${TARGET}/${MODE}/kernel.bin"
 USR_PARH = "usr"
 SFSIMG = "${USR_PATH}/rcore32.img"
-BOOTLOADER = "os/opensbi/virt.elf"
+BOOTLOADER = "opensbi/virt.elf"
 
 [env.development]
 MODE = "debug"
