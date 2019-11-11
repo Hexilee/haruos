@@ -3,6 +3,7 @@
 #![feature(lang_items, asm, global_asm)]
 
 mod init;
+mod interrupt;
 mod io;
 mod lang_items;
 mod sbi;
