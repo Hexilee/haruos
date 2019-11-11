@@ -5,5 +5,6 @@
 //extern crate libc;
 
 mod init;
+mod io;
 mod lang_items;
 mod sbi;
