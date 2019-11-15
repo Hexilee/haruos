@@ -2,6 +2,7 @@
 #![no_main] // disable all Rust-level entry points
 #![feature(lang_items, asm, global_asm)]
 
+mod clock;
 mod context;
 mod init;
 mod interrupt;
