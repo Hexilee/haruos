@@ -1,15 +1,14 @@
-use crate::sbi;
 use core::fmt::{self, Arguments, Write};
 
 struct Stdout;
 
-pub fn putchar(c: char) {
-    sbi::console_putchar(c as usize)
-}
-
 pub fn puts(s: &str) {
-    for c in s.chars() {
-        putchar(c)
+    let vga_buffer = 0xb8000 as *mut u8;
+    for (i, byte) in s.bytes().enumerate() {
+        unsafe {
+            *vga_buffer.offset(i as isize * 2) = byte;
+            *vga_buffer.offset(i as isize * 2 + 1) = 0xb;
+        }
     }
 }
 
