@@ -8,9 +8,10 @@ mod interrupt;
 mod io;
 mod memory;
 mod panic;
+mod vga_buffer;
 
 #[no_mangle]
 extern "C" fn _start() -> ! {
-    println!("Hello, {}", "World");
+    print!("Hello, {}", "World");
     loop {}
 }
