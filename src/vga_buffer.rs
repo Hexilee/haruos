@@ -1,12 +1,15 @@
 use core::fmt::{self, Write};
 use lazy_static::lazy_static;
+use spin::Mutex;
+use volatile::Volatile;
+
 lazy_static! {
-    pub static ref WRITER: Writer = Writer {
+    pub static ref WRITER: Mutex<Writer> = Mutex::new(Writer {
         column: 0,
         row: 0,
         char_attr: CharAttribute::new(Color::LightCyan, Color::Black),
         buffer: unsafe { &mut *(0xb8000 as *mut Buffer) },
-    };
+    });
 }
 
 const BUFFER_HEIGHT: usize = 25;
@@ -52,7 +55,7 @@ struct ScreenChar {
 }
 
 #[repr(transparent)]
-struct Buffer([[ScreenChar; BUFFER_WIDTH]; BUFFER_HEIGHT]);
+struct Buffer([[Volatile<ScreenChar>; BUFFER_WIDTH]; BUFFER_HEIGHT]);
 
 pub struct Writer {
     column: usize,
@@ -72,37 +75,46 @@ impl Writer {
                 let row = self.row;
                 let column = self.column;
                 let char_attr = self.char_attr;
-                self.buffer.0[row][column] = ScreenChar {
+                self.buffer.0[row][column].write(ScreenChar {
                     ascii_character: b,
                     char_attr,
-                };
+                });
                 self.column += 1;
             }
         }
     }
     fn new_line(&mut self) {
         if self.row >= HEIGHT_INDEX_MAX {
-            self.clean_row();
+            self.clear();
         } else {
             self.row += 1;
         }
         self.column = 0;
     }
-    fn clean_row(&mut self) {
-        for i in 0..HEIGHT_INDEX_MAX {
-            self.buffer[i] = self.buffer[i + 1];
-        }
-        self.buffer[HEIGHT_INDEX_MAX] = [ScreenChar {
+    fn clear(&mut self) {
+        let blank = ScreenChar {
             ascii_character: b' ',
             char_attr: CharAttribute(0),
-        }; BUFFER_WIDTH];
+        };
+        for row in 0..HEIGHT_INDEX_MAX {
+            for col in 0..BUFFER_WIDTH {
+                let char = self.buffer.0[row + 1][col].read();
+                self.buffer.0[row][col].write(char)
+            }
+        }
+        for i in 0..BUFFER_WIDTH {
+            self.buffer.0[HEIGHT_INDEX_MAX][i].write(blank)
+        }
     }
 }
 
 impl Write for Writer {
     fn write_str(&mut self, s: &str) -> fmt::Result {
         for byte in s.bytes() {
-            self.write_byte(byte)
+            match byte {
+                0x20..=0x7e | b'\n' => self.write_byte(byte),
+                _ => self.write_byte(0xfe),
+            }
         }
         Ok(())
     }

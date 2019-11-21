@@ -2,7 +2,7 @@ use crate::vga_buffer::WRITER;
 use core::fmt::{self, Arguments, Write};
 
 pub fn print(args: Arguments) -> fmt::Result {
-    WRITER.write_fmt(args)
+    WRITER.lock().write_fmt(args)
 }
 
 #[macro_export]
