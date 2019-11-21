@@ -16,6 +16,7 @@ const BUFFER_HEIGHT: usize = 25;
 const HEIGHT_INDEX_MAX: usize = BUFFER_HEIGHT - 1;
 const BUFFER_WIDTH: usize = 80;
 
+#[allow(dead_code)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[repr(u8)]
 pub enum Color {
