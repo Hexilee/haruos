@@ -12,6 +12,6 @@ mod vga_buffer;
 
 #[no_mangle]
 extern "C" fn _start() -> ! {
-    print!("Hello, {}", "World");
+    panic!("Hello, {}", "World");
     loop {}
 }
