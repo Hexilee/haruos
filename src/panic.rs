@@ -1,5 +1,9 @@
+#[cfg(not(test))]
+use crate::println;
+#[cfg(test)]
+use crate::serial_println;
+#[cfg(test)]
 use crate::test_framework::{exit_qemu, QemuExitCode};
-use crate::{println, serial_println};
 use core::panic::PanicInfo;
 
 #[cfg(not(test))]

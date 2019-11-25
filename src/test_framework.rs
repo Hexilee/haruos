@@ -1,6 +1,5 @@
-use crate::{serial_print, serial_println};
+use crate::serial_println;
 
-#[cfg(test)]
 pub fn test_runner(tests: &[&dyn Fn()]) {
     serial_println!("Running {} tests:", tests.len());
     for test in tests {
@@ -9,7 +8,6 @@ pub fn test_runner(tests: &[&dyn Fn()]) {
     exit_qemu(QemuExitCode::Success);
 }
 
-#[allow(dead_code)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[repr(u32)]
 pub enum QemuExitCode {
