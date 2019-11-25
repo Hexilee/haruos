@@ -6,3 +6,6 @@ rustflags = [
 
 [build]
 target = "x86_64-haruos.json"
+
+[target.'cfg(target_os = "none")']
+runner = "bootimage runner"
