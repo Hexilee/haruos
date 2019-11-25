@@ -1,7 +1,10 @@
-use core::fmt::{self, Write};
+use core::fmt::{self, Arguments, Write};
 use lazy_static::lazy_static;
 use spin::Mutex;
 use volatile::Volatile;
+
+#[cfg(test)]
+use crate::test_framework::*;
 
 lazy_static! {
     pub static ref WRITER: Mutex<Writer> = Mutex::new(Writer {
@@ -119,4 +122,23 @@ impl Write for Writer {
         }
         Ok(())
     }
+}
+
+pub fn _print(args: Arguments) -> fmt::Result {
+    WRITER.lock().write_fmt(args)
+}
+
+pub macro print($($args: tt)*) {
+    _print(format_args!($($args)*)).expect("fail to print")
+}
+
+pub macro println($($args:tt)*) {
+    print!("{}\n", format_args!($($args)*))
+}
+
+#[test_case]
+fn test_print_simple() {
+    serial_print!("test_print_simple... ");
+    println!("simple output");
+    serial_println!("[ok]");
 }

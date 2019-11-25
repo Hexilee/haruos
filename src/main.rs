@@ -1,19 +1,18 @@
 #![no_std] // don't link the Rust standard library
 #![no_main]
-#![feature(lang_items, custom_test_frameworks, abi_x86_interrupt)]
+#![feature(lang_items, custom_test_frameworks, abi_x86_interrupt, decl_macro)]
 #![test_runner(test_framework::test_runner)]
 #![reexport_test_harness_main = "test_main"]
 
 mod init;
 mod interrupt;
-mod io;
-mod memory;
 mod panic;
-mod serial;
+mod vga_buffer;
 
 #[cfg(test)]
 mod test_framework;
-mod vga_buffer;
+
+pub use vga_buffer::{print, println};
 
 #[cfg(test)]
 #[no_mangle]

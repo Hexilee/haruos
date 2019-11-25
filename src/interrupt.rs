@@ -1,4 +1,6 @@
-use crate::{println, serial_print, serial_println};
+use crate::println;
+#[cfg(test)]
+use crate::test_framework::*;
 use lazy_static::lazy_static;
 use x86_64::structures::idt::{InterruptDescriptorTable, InterruptStackFrame};
 

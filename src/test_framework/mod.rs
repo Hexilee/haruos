@@ -1,4 +1,5 @@
-use crate::serial_println;
+mod serial;
+pub use serial::{print as serial_print, println as serial_println};
 
 pub fn test_runner(tests: &[&dyn Fn()]) {
     serial_println!("Running {} tests:", tests.len());
