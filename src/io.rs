@@ -45,3 +45,10 @@ macro_rules! serial_println {
         crate::serial_print!("{}\n", format_args!($($args)*))
     };
 }
+
+#[test_case]
+fn test_print_simple() {
+    serial_print!("test_print_simple... ");
+    println!("simple output");
+    serial_println!("[ok]");
+}
