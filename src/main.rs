@@ -5,7 +5,8 @@
     asm,
     global_asm,
     alloc_error_handler,
-    custom_test_frameworks
+    custom_test_frameworks,
+    abi_x86_interrupt
 )]
 #![test_runner(test_framework::test_runner)]
 #![reexport_test_harness_main = "test_main"]
@@ -24,6 +25,7 @@ mod vga_buffer;
 #[cfg(test)]
 #[no_mangle]
 extern "C" fn _start() -> ! {
+    interrupt::init_idt();
     test_main();
     loop {}
 }
@@ -32,5 +34,8 @@ extern "C" fn _start() -> ! {
 #[no_mangle]
 extern "C" fn _start() -> ! {
     println!("kernel boot");
+    interrupt::init_idt();
+    x86_64::instructions::interrupts::int3();
+    println!("boot continue");
     loop {}
 }
