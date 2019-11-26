@@ -1,3 +1,4 @@
+use crate::gdt::DOUBLE_FAULT_IST_INDEX;
 use crate::println;
 #[cfg(test)]
 use crate::test_framework::*;
@@ -8,7 +9,11 @@ lazy_static! {
     static ref IDT: InterruptDescriptorTable = {
         let mut idt = InterruptDescriptorTable::new();
         idt.breakpoint.set_handler_fn(breakpoint_handler);
-        idt.double_fault.set_handler_fn(double_fault_handler);
+        unsafe {
+            idt.double_fault
+                .set_handler_fn(double_fault_handler)
+                .set_stack_index(DOUBLE_FAULT_IST_INDEX);
+        }
         idt
     };
 }

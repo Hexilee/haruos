@@ -4,6 +4,7 @@
 #![test_runner(test_framework::test_runner)]
 #![reexport_test_harness_main = "test_main"]
 
+mod gdt;
 mod init;
 mod interrupt;
 mod panic;
@@ -27,7 +28,11 @@ extern "C" fn _start() -> ! {
 extern "C" fn _start() -> ! {
     println!("kernel boot");
     init::init();
-    x86_64::instructions::interrupts::int3();
+    //    x86_64::instructions::interrupts::int3();
+    fn stack_overflow() {
+        stack_overflow()
+    }
+    stack_overflow();
     println!("boot continue");
     loop {}
 }
